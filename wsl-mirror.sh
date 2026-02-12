@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e # Exit on error
 
+MIRROR_LOG="\033[1;34m[WSL-Mirror]\033[0m"
+
 # 1. Change Ubuntu sources
 # https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/
 # Ubuntu 24.04 uses /etc/apt/sources.list.d/ubuntu.sources
@@ -8,13 +10,13 @@ TARGET_SOURCE="/etc/apt/sources.list.d/ubuntu.sources"
 
 # Backup the original source file
 if [ ! -f "${TARGET_SOURCE}.bak" ]; then
-    echo "[WSL-Mirror] Backing up original APT sources to ${TARGET_SOURCE}.bak"
+    echo -e "$MIRROR_LOG Backing up original APT sources to ${TARGET_SOURCE}.bak"
     sudo cp $TARGET_SOURCE "${TARGET_SOURCE}.bak"
 fi
 
 # Use a heredoc to overwrite the file with the new DEB822 format for 24.04 (noble)
-echo "[WSL-Mirror] Updating APT sources to Tsinghua mirror"
-sudo tee $TARGET_SOURCE <<EOF
+echo -e "$MIRROR_LOG Updating APT sources to Tsinghua mirror"
+sudo tee $TARGET_SOURCE > /dev/null <<EOF
 Types: deb
 URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
 Suites: noble noble-updates noble-backports
@@ -78,7 +80,7 @@ sudo apt -y install python3-venv
 sudo apt -y install curl
 # https://gitee.com/mirrors/nvm
 if [ ! -d "$HOME/.nvm" ]; then
-    echo "[WSL-Mirror] Installing NVM"
+    echo -e "$MIRROR_LOG Installing NVM"
     curl -o- https://gitee.com/mirrors/nvm/raw/master/install.sh | bash
 fi
 
@@ -93,7 +95,7 @@ export NVM_DIR="$HOME/.nvm"
 # https://askubuntu.com/a/969923
 # Write activation script to ~/.bashrc to auto-start nvm
 if ! grep -q "NVM_DIR" ~/.bashrc; then
-    echo "[WSL-Mirror] Adding NVM to ~/.bashrc"
+    echo -e "$MIRROR_LOG Adding NVM to ~/.bashrc"
 
     echo -e "\nexport NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node" >> ~/.bashrc
     echo -e \
@@ -114,4 +116,4 @@ npm config set registry https://registry.npmmirror.com
 # https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748
 #sudo ln -s /usr/lib/wsl/lib/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
 
-echo "[WSL-Mirror] Setup Complete"
+echo -e "$MIRROR_LOG Setup Complete"
