@@ -59,12 +59,14 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF
 
 # 2. Update the package index files and upgrade packages
+echo -e "$MIRROR_LOG Update and Upgrade"
 sudo apt update
 sudo DEBIAN_FRONTEND=noninteractive apt -y upgrade
 
 # 3. Python and Pip Setup
 # https://learn.microsoft.com/en-us/windows/python/web-frameworks
 # only upgrade python3 here
+echo -e "$MIRROR_LOG Setting up Python, pip and venv"
 sudo apt -y upgrade python3
 
 sudo apt -y install python3-pip
@@ -97,14 +99,16 @@ export NVM_DIR="$HOME/.nvm"
 if ! grep -q "NVM_DIR" ~/.bashrc; then
     echo -e "$MIRROR_LOG Adding NVM to ~/.bashrc"
 
-    echo -e "\nexport NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node" >> ~/.bashrc
-    echo -e \
-        "\nexport NVM_DIR=\"\$([ -z \"\${XDG_CONFIG_HOME-}\" ] && printf %s \"\${HOME}/.nvm\" || printf %s \"\${XDG_CONFIG_HOME}/nvm\")\"\
-        \n[ -s \"\$NVM_DIR/nvm.sh\" ] && \\. \"\$NVM_DIR/nvm.sh\" # This loads nvm" \
-        >> ~/.bashrc
+    cat << 'EOF' >> ~/.bashrc
+
+export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+EOF
 fi
 
 # Install Node LTS in nvm
+echo -e "$MIRROR_LOG Installing Node.js LTS and using it"
 nvm install --lts
 nvm use --lts
 
