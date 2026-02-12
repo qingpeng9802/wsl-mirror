@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e # Exit on error
 
+# Set log color
 MIRROR_LOG="\033[1;34m[WSL-Mirror]\033[0m"
 
 # 1. Change Ubuntu sources
