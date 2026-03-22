@@ -8,13 +8,13 @@
 set -euo pipefail # Exit on error
 
 err() {
-  # red color
-  echo -e "\033[1;31m[WSL-Mirror] ERROR:\033[0m $*" >&2
+  # Red color for errors
+  printf "\033[1;31m[WSL-Mirror] ERROR:\033[0m %s\n" "$*" >&2
 }
 
 log() {
-  # blue color
-  echo -e "\033[1;34m[WSL-Mirror]\033[0m $*"
+  # Blue color for logs
+  printf "\033[1;34m[WSL-Mirror]\033[0m %s\n" "$*"
 }
 
 # 1. Change Ubuntu sources
@@ -42,27 +42,27 @@ setup_apt_mirrors() {
   # Use a heredoc to overwrite the file with the new DEB822 format
   sudo tee "${TARGET_SOURCE}" > /dev/null <<EOF || { err "Failed to write to ${TARGET_SOURCE}"; return 1; }
 Types: deb
-URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+URIs: http://mirrors.tuna.tsinghua.edu.cn/ubuntu
 Suites: noble noble-updates noble-backports
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 # 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
 # Types: deb-src
-# URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+# URIs: http://mirrors.tuna.tsinghua.edu.cn/ubuntu
 # Suites: noble noble-updates noble-backports
 # Components: main restricted universe multiverse
 # Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 # 以下安全更新软件源包含了官方源与镜像站配置，如有需要可自行修改注释切换
 Types: deb
-URIs: https://security.ubuntu.com/ubuntu/
+URIs: http://security.ubuntu.com/ubuntu/
 Suites: noble-security
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 # Types: deb-src
-# URIs: https://security.ubuntu.com/ubuntu/
+# URIs: http://security.ubuntu.com/ubuntu/
 # Suites: noble-security
 # Components: main restricted universe multiverse
 # Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
@@ -70,13 +70,13 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 # 预发布软件源，不建议启用
 
 # Types: deb
-# URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+# URIs: http://mirrors.tuna.tsinghua.edu.cn/ubuntu
 # Suites: noble-proposed
 # Components: main restricted universe multiverse
 # Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
 # # Types: deb-src
-# # URIs: https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+# # URIs: http://mirrors.tuna.tsinghua.edu.cn/ubuntu
 # # Suites: noble-proposed
 # # Components: main restricted universe multiverse
 # # Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
@@ -237,8 +237,8 @@ main() {
         shift
         ;;
       -h|--help)
-        echo "Usage: $0 [--cuda]"
-        echo "  -c, --cuda    Create a CUDA symlink"
+        printf "Usage: %s [--cuda]\n" "$0"
+        printf "  -c, --cuda    Create a CUDA symlink\n"
         exit 0
         ;;
       *)
