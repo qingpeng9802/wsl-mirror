@@ -137,6 +137,7 @@ setup_node_nvm() {
     }
   fi
 
+  set +u
   # https://gitee.com/mirrors/nvm
   if [[ ! -d "${HOME}/.nvm" ]]; then
     log "Installing NVM"
@@ -148,7 +149,9 @@ setup_node_nvm() {
 
   # Load NVM for current session
   export NVM_DIR="$HOME/.nvm"
+  # shellcheck disable=SC1091
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+  # shellcheck disable=SC1091
   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
   # https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script
@@ -183,6 +186,7 @@ EOF
     err "Failed to use Node LTS via nvm"
     return 1
   }
+  set -u
 }
 
 # 5. Change NPM Registry

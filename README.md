@@ -12,3 +12,10 @@ shell 命令都包含详细注释，强烈推荐使用前阅读.
 ```shell
 bash wsl-mirror.sh
 ```
+</br>
+
+> 如果需要创建 libcuda.so symlink:  
+https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748
+```shell
+bash wsl-mirror.sh -c
+```
