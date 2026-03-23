@@ -129,7 +129,7 @@ setup_python_pip() {
 
 # 4. Node.js via NVM
 # https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl
-setup_node_nvm() {
+setup_node_nvm_and_npm_registry() {
   if ! command -v curl &> /dev/null; then
     sudo apt -y install curl || {
       err "Failed to install curl"
@@ -187,11 +187,9 @@ EOF
     return 1
   }
   set -u
-}
 
-# 5. Change NPM Registry
-# https://npmmirror.com/
-set_npm_registry() {
+  # Change NPM Registry
+  # https://npmmirror.com/
   log "Setting NPM Registry to npmmirror"
   npm config set registry https://registry.npmmirror.com || {
     err "Failed to set NPM registry to npmmirror"
@@ -250,8 +248,7 @@ main() {
   setup_apt_mirrors
   update_and_upgrade
   setup_python_pip
-  setup_node_nvm
-  set_npm_registry
+  setup_node_nvm_and_npm_registry
 
   if [[ "$enable_cuda" = true ]]; then
     set_cuda
@@ -263,4 +260,6 @@ main() {
 }
 
 # Invoke the main function
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
