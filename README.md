@@ -18,31 +18,29 @@ bash wsl-mirror.sh
 ```shell
 bash wsl-mirror.sh -c
 ```
-</br>
-
 #### 单行命令（下载并运行）
 选择 curl 或 wget
 ```shell
-curl -fsSL --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/32fdf02/wsl-mirror.sh | bash
+curl -fsSL --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh | bash
 ```
 ```shell
-wget -qO- --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/32fdf02/wsl-mirror.sh | bash
+wget -qO- --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh | bash
 ```
 </br>
 
 > 如果需要创建 libcuda.so symlink: https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748
 ```shell
-curl -fsSL --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/32fdf02/wsl-mirror.sh | bash -s -- -c
+curl -fsSL --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh | bash -s -- -c
 ```
 ```shell
-wget -qO- --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/32fdf02/wsl-mirror.sh | bash -s -- -c
+wget -qO- --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh | bash -s -- -c
 ```
 #### 仅下载文件
 选择 git clone, curl 或 wget 下载文件
 ```shell
-curl -fsSLO --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/32fdf02/wsl-mirror.sh
+curl -fsSLO --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh
 ```
 ```shell
-wget -q --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/32fdf02/wsl-mirror.sh
+wget -q --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh
 ```
 
