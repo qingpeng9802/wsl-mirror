@@ -5,6 +5,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./test
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -14,6 +17,9 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./test
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
