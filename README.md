@@ -14,10 +14,12 @@ shell 命令都包含详细注释，强烈推荐使用前阅读.
 ```shell
 bash wsl-mirror.sh
 ```
-> 如果需要创建 libcuda.so symlink: https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748
+> 如果需要创建 libcuda.so symlink https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748 :
 ```shell
 bash wsl-mirror.sh -c
 ```
+</br>
+
 #### 单行命令（下载并运行）
 选择 curl 或 wget
 ```shell
@@ -28,7 +30,7 @@ wget -qO- --https-only --secure-protocol=TLSv1_3 https://raw.githubusercontent.c
 ```
 </br>
 
-> 如果需要创建 libcuda.so symlink: https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748
+> 如果需要创建 libcuda.so symlink https://github.com/microsoft/WSL/issues/5663#issuecomment-760679748 :
 ```shell
 curl -fsSL --proto '=https' --tlsv1.3 https://raw.githubusercontent.com/qingpeng9802/wsl-mirror/285f76a/wsl-mirror.sh | bash -s -- -c
 ```
