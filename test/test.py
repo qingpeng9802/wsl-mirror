@@ -1,10 +1,20 @@
 import subprocess
 import os
 import pytest
+import platform
 from pathlib import Path
 
 TSINGHUA_URL = "mirrors.tuna.tsinghua.edu.cn"
 SCRIPT_PATH = "./wsl-mirror.sh"
+
+
+def get_os_id():
+    try:
+        # Returns a dictionary of /etc/os-release keys
+        info = platform.freedesktop_os_release()
+        return info.get("ID")  # should return 'ubuntu' or 'debian'
+    except OSError:
+        return "unknown"
 
 
 def run_command(cmd):
@@ -30,9 +40,12 @@ def run_script(args=None):
 class Verifier:
     @staticmethod
     def verify_setup_apt_mirrors():
+        OS_URLS = {"ubuntu": "archive.ubuntu.com", "debian": "deb.debian.org"}
 
-        UBUNTU_URL = "archive.ubuntu.com"
-        SOURCE_PATH = "/etc/apt/sources.list.d/ubuntu.sources"
+        os_id = get_os_id()
+        assert os_id in OS_URLS
+        ORIGINAL_URL = OS_URLS[os_id]
+        SOURCE_PATH = f"/etc/apt/sources.list.d/{os_id}.sources"
         BAK_PATH = f"{SOURCE_PATH}.bak"
 
         assert os.path.exists(SOURCE_PATH)
@@ -40,7 +53,7 @@ class Verifier:
         with open(SOURCE_PATH, "r") as f:
             assert TSINGHUA_URL in f.read()
         with open(BAK_PATH, "r") as f:
-            assert UBUNTU_URL in f.read()
+            assert ORIGINAL_URL in f.read()
             assert TSINGHUA_URL not in f.read()
 
     @staticmethod
@@ -64,6 +77,7 @@ class Verifier:
         assert "NVM_DIR" in content
         assert "npmmirror.com" in content
 
+        # use bash -i to load ~/.bashrc
         result = run_command("bash -i -c 'echo $NVM_NODEJS_ORG_MIRROR'")
         assert "npmmirror.com" in result.stdout
 
@@ -71,13 +85,12 @@ class Verifier:
         assert result.returncode == 0
         assert "v" in result.stdout
 
-        cmd = "source ~/.nvm/nvm.sh && nvm version lts/* && node -v"
-        result = run_command(f"bash -c '{cmd}'")
+        cmd = "nvm version lts/* && node -v"
+        result = run_command(f"bash -i -c '{cmd}'")
         versions = result.stdout.strip().split("\n")
         assert versions[0] == versions[1]
 
         NPMMIRROR_REGISTRY = "registry.npmmirror.com"
-        # Test NPM registry via a login shell to ensure NVM is loaded
         result = run_command("bash -i -c 'npm config get registry'")
         assert NPMMIRROR_REGISTRY in result.stdout
 
@@ -90,16 +103,16 @@ class Verifier:
         assert str(target_link.resolve()) == "/usr/lib/wsl/lib/libcuda.so.1"
 
 
-#class TestFullWorkflow:
-#    def test_script_success(self):
-#        result = run_script("-c")
-#        assert result.returncode == 0
-#        assert "Setup Complete" in result.stdout
-#
-#        Verifier.verify_setup_apt_mirrors()
-#        Verifier.verify_setup_python_pip()
-#        Verifier.verify_setup_node_nvm_and_npm_registry()
-#        Verifier.verify_set_cuda()
+class TestFullWorkflow:
+    def test_script_success(self):
+        result = run_script(["-c"])
+        assert result.returncode == 0
+        assert "Setup Complete" in result.stdout
+
+        Verifier.verify_setup_apt_mirrors()
+        Verifier.verify_setup_python_pip()
+        Verifier.verify_setup_node_nvm_and_npm_registry()
+        Verifier.verify_set_cuda()
 
 
 class TestIndividualFunctions:

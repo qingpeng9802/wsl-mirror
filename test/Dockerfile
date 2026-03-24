@@ -1,4 +1,5 @@
-FROM ubuntu:24.04
+ARG BASE_IMAGE=ubuntu:24.04
+FROM ${BASE_IMAGE}
 
 RUN apt-get update && apt-get install -y \
     sudo python3 python3-pytest && \

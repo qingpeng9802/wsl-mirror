@@ -17,13 +17,36 @@ log() {
   printf "\033[1;34m[WSL-Mirror]\033[0m %s\n" "$*"
 }
 
-# 1. Change Ubuntu sources
+# 1. Change APT sources
 # https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/
+# https://mirrors.tuna.tsinghua.edu.cn/help/debian/
 setup_apt_mirrors() {
-  # Ubuntu 24.04 and later uses /etc/apt/sources.list.d/ubuntu.sources
-  local -r TARGET_SOURCE="/etc/apt/sources.list.d/ubuntu.sources"
+  # Detect OS
+  if [[ -f /etc/os-release ]]; then
+    # Use a subshell to avoid polluting the current shell environment
+    local -r OS_ID=$(grep -oP '^ID=\K.*' /etc/os-release | tr -d '"')
+    local -r CODENAME=$(grep -oP '^VERSION_CODENAME=\K.*' /etc/os-release | tr -d '"')
+    
+    # Fallback: If CODENAME is empty, try to parse it from the VERSION string
+    # Example: VERSION="12 (bookworm)" -> extracts "bookworm"
+    if [[ -z "${CODENAME}" ]]; then
+        CODENAME=$(grep -oP '^VERSION=.*\(\K[^)]+' /etc/os-release)
+    fi
+  else
+    err "Cannot detect OS type."
+    return 1
+  fi
 
-  # Check if ubuntu.sources path exists
+  if [[ ! ("${OS_ID}" == "ubuntu" || "${OS_ID}" == "debian") ]]; then
+    err "Unsupported OS: ${OS_ID}. Only Ubuntu and Debian are supported."
+    return 1
+  fi
+
+  # Ubuntu 24.04 (noble) and later uses /etc/apt/sources.list.d/ubuntu.sources by default
+  # Since Debian 13 (trixie) /etc/apt/sources.list.d/debian.sources is recommended
+  local -r TARGET_SOURCE="/etc/apt/sources.list.d/${OS_ID}.sources"
+
+  # Check if ubuntu.sources or debian.sources path exists
   if [[ ! -f "${TARGET_SOURCE}" ]]; then
     err "File ${TARGET_SOURCE} not found"
     return 1
@@ -38,9 +61,12 @@ setup_apt_mirrors() {
     }
   fi
 
-  log "Updating APT sources to Tsinghua mirror"
   # Use a heredoc to overwrite the file with the new DEB822 format
-  sudo tee "${TARGET_SOURCE}" > /dev/null <<EOF || { err "Failed to write to ${TARGET_SOURCE}"; return 1; }
+  log "Updating APT sources to Tsinghua mirror"
+  
+  case "${OS_ID}" in
+    "ubuntu")
+      sudo tee "${TARGET_SOURCE}" > /dev/null <<EOF || { err "Failed to write to ${TARGET_SOURCE}"; return 1; }
 Types: deb
 URIs: http://mirrors.tuna.tsinghua.edu.cn/ubuntu
 Suites: noble noble-updates noble-backports
@@ -81,6 +107,42 @@ Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 # # Components: main restricted universe multiverse
 # # Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF
+      ;;
+
+    "debian")
+      sudo tee "${TARGET_SOURCE}" > /dev/null <<EOF || { err "Failed to write to ${TARGET_SOURCE}"; return 1; }
+Types: deb
+URIs: http://mirrors.tuna.tsinghua.edu.cn/debian
+Suites: trixie trixie-updates trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
+# Types: deb-src
+# URIs: http://mirrors.tuna.tsinghua.edu.cn/debian
+# Suites: trixie trixie-updates trixie-backports
+# Components: main contrib non-free non-free-firmware
+# Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+# 以下安全更新软件源包含了官方源与镜像站配置，如有需要可自行修改注释切换
+Types: deb
+URIs: https://security.debian.org/debian-security
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+# Types: deb-src
+# URIs: https://security.debian.org/debian-security
+# Suites: trixie-security
+# Components: main contrib non-free non-free-firmware
+# Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+EOF
+      ;;
+
+    *) err "Unsupported OS for mirror setup"; return 1 ;;
+  esac
+
+  sudo sed -E -i "s/(noble|trixie)/${CODENAME}/g" "${TARGET_SOURCE}"
 }
 
 # 2. Update the package index files and upgrade packages
