@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  workflow_dispatch:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Run ShellCheck
+        run: make lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Build and Test Ubuntu
+        run: make build-ubuntu test-ubuntu
+      - name: Build and Test Debian
+        run: make build-debian test-debian
