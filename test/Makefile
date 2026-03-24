@@ -11,15 +11,15 @@ TEST_LOG = \033[0;34m[Test]\033[0m
 .PHONY: all lint build test clean $(OS_VARIANTS)
 
 all: lint build test
+build: build-ubuntu build-debian
+test: test-ubuntu test-debian
+
 ubuntu: lint build-ubuntu test-ubuntu
 debian: lint build-debian test-debian
 
 lint:
 	@echo "$(TEST_LOG) Running ShellCheck"
 	docker run --rm -v "$(PWD)/..:/mnt" $(SHELLCHECK_IMG) /mnt/$(SCRIPT_NAME)
-
-build: build-ubuntu build-debian
-test: test-ubuntu test-debian
 
 # --- Ubuntu specific ---
 build-ubuntu:
