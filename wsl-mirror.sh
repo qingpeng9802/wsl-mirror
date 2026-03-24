@@ -187,6 +187,16 @@ setup_python_pip() {
   else
     err "pip3 not found after installation. Skipping PyPI config."
   fi
+
+  # In case user uses UV
+  log "Setting UV_INDEX_URL"
+  export UV_INDEX_URL="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+  if ! grep -q "UV_INDEX_URL" "${HOME}/.bashrc"; then
+    cat << 'EOF' >> ~/.bashrc
+
+export UV_INDEX_URL="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+EOF
+  fi
 }
 
 # 4. Node.js via NVM
@@ -223,7 +233,6 @@ setup_node_nvm_and_npm_registry() {
     log "Adding NVM to ~/.bashrc"
     cat << 'EOF' >> ~/.bashrc
 
-# NVM Configuration
 export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm

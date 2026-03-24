@@ -65,6 +65,10 @@ class Verifier:
         result = run_command("pip3 config get global.index-url")
         assert TSINGHUA_URL in result.stdout
 
+        # use bash -i to load ~/.bashrc
+        result = run_command("bash -i -c 'echo $UV_INDEX_URL'")
+        assert TSINGHUA_URL in result.stdout
+
     @staticmethod
     def verify_setup_node_nvm_and_npm_registry():
         result = run_command("command -v curl")
