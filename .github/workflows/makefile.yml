@@ -20,11 +20,13 @@ jobs:
     defaults:
       run:
         working-directory: ./test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, debian]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Build and Test Ubuntu
-        run: make build-ubuntu test-ubuntu
-      - name: Build and Test Debian
-        run: make build-debian test-debian
+      - name: Build and Test
+        run: make build-${{ matrix.os }} test-${{ matrix.os }}
