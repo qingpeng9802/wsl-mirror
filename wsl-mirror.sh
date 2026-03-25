@@ -213,7 +213,7 @@ setup_node_nvm_and_npm_registry() {
   # https://gitee.com/mirrors/nvm
   if [[ ! -d "${HOME}/.nvm" ]]; then
     log "Installing NVM"
-    curl -fsSL https://gitee.com/mirrors/nvm/raw/master/install.sh | bash || {
+    curl -fsSL --proto '=https' --tlsv1.3 https://gitee.com/mirrors/nvm/raw/master/install.sh | bash || {
       err "NVM download or installation script failed"
       return 1
     }
