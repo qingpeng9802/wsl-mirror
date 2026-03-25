@@ -5,7 +5,8 @@
 apt 和 pip 使用清华源 [ubuntu](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/) | [debian](https://mirrors.tuna.tsinghua.edu.cn/help/debian/) | [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/)，npm 和 node 使用[阿里源](https://npmmirror.com/).  
 兼容 WSL 及非 WSL 下的 Ubuntu 和 Debian.  
 
-同时，对于 WSL 第一次安装 Python、pip、Node.js 和 npm 的方式，遵循微软的最佳实践指引，即 [Python](https://learn.microsoft.com/en-us/windows/python/web-frameworks) 和 [Node.js](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl).
+同时，对于 WSL 第一次安装 Python、pip、Node.js 和 npm 的方式，遵循微软的最佳实践指引，即 [Python](https://learn.microsoft.com/en-us/windows/python/web-frameworks) 和 [Node.js](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl).  
+script 未安装 uv, 但已将 `UV_DEFAULT_INDEX` 设为清华源 [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/).  
   
 shell 命令都包含详细注释，强烈推荐使用前阅读.  
 请注意，如果 WSL 不是在初始状态，即已被修改和使用过，该 script 可能会造成文件的意外修改，特别注意 `/etc/apt/sources.list.d/ubuntu.sources` (Debian: `/etc/apt/sources.list.d/debian.sources`) 和 `~/.bashrc`.  

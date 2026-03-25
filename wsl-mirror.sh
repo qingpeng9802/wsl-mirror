@@ -189,12 +189,12 @@ setup_python_pip() {
   fi
 
   # In case user uses UV
-  log "Setting UV_INDEX_URL"
-  export UV_INDEX_URL="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-  if ! grep -q "UV_INDEX_URL" "${HOME}/.bashrc"; then
+  log "Setting UV_DEFAULT_INDEX"
+  export UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+  if ! grep -q "UV_DEFAULT_INDEX" "${HOME}/.bashrc"; then
     cat << 'EOF' >> ~/.bashrc
 
-export UV_INDEX_URL="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+export UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 EOF
   fi
 }

@@ -66,7 +66,7 @@ class Verifier:
         assert TSINGHUA_URL in result.stdout
 
         # use bash -i to load ~/.bashrc
-        result = run_command("bash -i -c 'echo $UV_INDEX_URL'")
+        result = run_command("bash -i -c 'echo $UV_DEFAULT_INDEX'")
         assert TSINGHUA_URL in result.stdout
 
     @staticmethod
