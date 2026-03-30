@@ -7,6 +7,9 @@
 
 set -euo pipefail # Exit on error
 
+# Force a secure, minimal PATH to avoid PATH interception
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 err() {
   # Red color for errors
   printf "\033[1;31m[WSL-Mirror] ERROR:\033[0m %s\n" "$*" >&2
