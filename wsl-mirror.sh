@@ -278,13 +278,29 @@ set_cuda() {
   log "Creating symlink for CUDA"
 
   if [[ ! -f "${LIB_PATH}" ]]; then
-    err "${LIB_PATH} not found, check your driver"
+    err "${LIB_PATH} not found, check your NVIDIA driver installation on Windows"
+    return 1
+  fi
+
+  sudo mkdir -p "${TARGET_DIR}"
+
+  # If it is already a link, check if it is correct
+  if [[ -L "${TARGET_PATH}" ]]; then
+    if [[ "$(readlink -f "${TARGET_PATH}")" == "${LIB_PATH}" ]]; then
+      log "CUDA symlink already exists. Skip creating symlink"
+      return 0
+    else
+      err "Existing link points elsewhere. Skip creating symlink"
+      return 1
+    fi
+  # If it is a real file, do not touch it
+  elif [[ -e "${TARGET_PATH}" ]]; then
+    err "${TARGET_PATH} is a real file. Skip creating symlink"
     return 1
   fi
 
   # sudo ln -s /usr/lib/wsl/lib/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
-  sudo mkdir -p "${TARGET_DIR}"
-  sudo ln -sf "${LIB_PATH}" "${TARGET_PATH}" || {
+  sudo ln -sn "${LIB_PATH}" "${TARGET_PATH}" || {
     err "Failed to create symlink"
     return 1
   }
