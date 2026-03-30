@@ -8,7 +8,7 @@
 set -euo pipefail # Exit on error
 
 # Force a secure, minimal PATH to avoid PATH interception
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
 
 err() {
   # Red color for errors
@@ -216,7 +216,7 @@ setup_node_nvm_and_npm_registry() {
   # https://gitee.com/mirrors/nvm
   if [[ ! -d "${HOME}/.nvm" ]]; then
     log "Installing NVM"
-    curl -fsSL --proto '=https' --tlsv1.3 https://gitee.com/mirrors/nvm/raw/master/install.sh | bash || {
+    /bin/bash -c "$(curl -fsSL --proto '=https' --tlsv1.3 https://gitee.com/mirrors/nvm/raw/master/install.sh)" || {
       err "NVM download or installation script failed"
       return 1
     }
