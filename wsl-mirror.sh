@@ -20,6 +20,14 @@ log() {
   printf "\033[1;34m[WSL-Mirror]\033[0m %s\n" "$*"
 }
 
+# Check sudo
+check_sudo() {
+  sudo -v -p "[WSL-Mirror] Please enter your password to allow sudo: " || {
+    err "sudo authentication failed. This script requires sudo."
+    exit 1
+  }
+}
+
 # 1. Change APT sources
 # https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/
 # https://mirrors.tuna.tsinghua.edu.cn/help/debian/
@@ -315,6 +323,8 @@ set_cuda() {
 }
 
 main() {
+  check_sudo
+
   local enable_cuda=false
 
   # Parse arguments
