@@ -8,7 +8,7 @@ apt 和 pip 使用清华源 [ubuntu](https://mirrors.tuna.tsinghua.edu.cn/help/u
 同时，对于 WSL 第一次安装 Python、pip、Node.js 和 npm 的方式，遵循微软的最佳实践指引，即 [Python](https://learn.microsoft.com/en-us/windows/python/web-frameworks) 和 [Node.js](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl).  
 script 未安装 uv, 但已将 `UV_DEFAULT_INDEX` 设为清华源 [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/).  
   
-shell 命令都包含详细注释，强烈推荐使用前阅读.  
+shell 命令都包含详细注释，强烈推荐使用前阅读. 旧版本 [wsl-mirror.sh](https://github.com/qingpeng9802/wsl-mirror/blob/71144c3d8f951dc48a485252ed801fc1f0a696cc/wsl-mirror.sh) 可能更容易理解.  
 请注意，如果 WSL 不是在初始状态，即已被修改和使用过，该 script 可能会造成文件的意外修改，特别注意 `/etc/apt/sources.list.d/ubuntu.sources` (Debian: `/etc/apt/sources.list.d/debian.sources`) 和 `~/.bashrc`.  
 
 ## 使用方式
