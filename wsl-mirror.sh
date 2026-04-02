@@ -22,7 +22,7 @@ log() {
 
 # Check sudo
 check_sudo() {
-  sudo -v -p "[WSL-Mirror] Please enter your password to allow sudo: " || {
+  sudo -v || {
     err "sudo authentication failed. This script requires sudo."
     exit 1
   }
