@@ -20,6 +20,10 @@ log() {
   printf "\033[1;34m[WSL-Mirror]\033[0m %s\n" "$*"
 }
 
+divider() {
+  printf "%*s\033[0m\n" 80 "" | tr " " "-"
+}
+
 # Check sudo
 check_sudo() {
   sudo -v || {
@@ -154,6 +158,8 @@ EOF
   esac
 
   sudo sed -E -i "s/(noble|trixie)/${CODENAME}/g" "${TARGET_SOURCE}"
+
+  divider
 }
 
 # 2. Update the package index files and upgrade packages
@@ -169,6 +175,8 @@ update_and_upgrade() {
     err "APT upgrade failed"
     return 1
   }
+
+  divider
 }
 
 # 3. Python and Pip Setup
@@ -208,6 +216,8 @@ setup_python_pip() {
 export UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 EOF
   fi
+
+  divider
 }
 
 # 4. Node.js via NVM
@@ -277,6 +287,8 @@ EOF
     err "Failed to set NPM registry to npmmirror"
     return 1
   }
+
+  divider
 }
 
 # If you need to use GPU CUDA on WSL
@@ -320,6 +332,8 @@ set_cuda() {
     err "Failed to create symlink"
     return 1
   fi
+
+  divider
 }
 
 main() {
