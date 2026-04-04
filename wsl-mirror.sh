@@ -20,12 +20,18 @@ log() {
   printf "\033[1;34m[WSL-Mirror]\033[0m %s\n" "$*"
 }
 
+run() {
+  # Blue color for running commands
+  printf "\033[1;34m>\033[0m %s\n" "$*"
+}
+
 divider() {
   printf "%*s\033[0m\n" 80 "" | tr " " "-"
 }
 
 # Check sudo
 check_sudo() {
+  run "sudo -v"
   sudo -v || {
     err "sudo authentication failed. This script requires sudo."
     exit 1
@@ -70,6 +76,7 @@ setup_apt_mirrors() {
   # Backup the original source file
   if [[ ! -f "${TARGET_SOURCE}.bak" ]]; then
     log "Backing up original APT sources to ${TARGET_SOURCE}.bak"
+    run "sudo cp ${TARGET_SOURCE} ${TARGET_SOURCE}.bak"
     sudo cp "${TARGET_SOURCE}" "${TARGET_SOURCE}.bak" || {
       err "Failed to create backup of ${TARGET_SOURCE} by cp command"
       return 1
@@ -81,6 +88,7 @@ setup_apt_mirrors() {
   
   case "${OS_ID}" in
     "ubuntu")
+      run "sudo tee ${TARGET_SOURCE} > /dev/null <<EOF [new_sources]EOF"
       sudo tee "${TARGET_SOURCE}" > /dev/null <<EOF || { err "Failed to write to ${TARGET_SOURCE}"; return 1; }
 Types: deb
 URIs: http://mirrors.tuna.tsinghua.edu.cn/ubuntu
@@ -125,6 +133,7 @@ EOF
       ;;
 
     "debian")
+      run "sudo tee ${TARGET_SOURCE} > /dev/null <<EOF [new_sources]EOF"
       sudo tee "${TARGET_SOURCE}" > /dev/null <<EOF || { err "Failed to write to ${TARGET_SOURCE}"; return 1; }
 Types: deb
 URIs: http://mirrors.tuna.tsinghua.edu.cn/debian
@@ -157,6 +166,7 @@ EOF
     *) err "Unsupported OS for mirror setup"; return 1 ;;
   esac
 
+  run "sudo sed -i \"s/(noble|trixie)/${CODENAME}/g\" ${TARGET_SOURCE}"
   sudo sed -E -i "s/(noble|trixie)/${CODENAME}/g" "${TARGET_SOURCE}"
 
   divider
@@ -165,12 +175,14 @@ EOF
 # 2. Update the package index files and upgrade packages
 update_and_upgrade() {
   log "Updating package index"
+  run "sudo apt update"
   sudo apt update || {
     err "APT update failed"
     return 1
   }
 
   log "Upgrading packages"
+  run "sudo DEBIAN_FRONTEND=noninteractive apt -y upgrade"
   sudo DEBIAN_FRONTEND=noninteractive apt -y upgrade || {
     err "APT upgrade failed"
     return 1
@@ -184,11 +196,13 @@ update_and_upgrade() {
 setup_python_pip() {
   # only upgrade python3 here
   log "Setting up Python, pip and venv"
+  run "sudo apt -y upgrade python3"
   sudo apt -y upgrade python3 || {
     err "python3 upgrade failed"
     return 1
   }
 
+  run "sudo apt -y install python3-pip python3-venv"
   sudo apt -y install python3-pip python3-venv || {
     err "Failed to install python3-pip python3-venv"
     return 1
@@ -198,6 +212,8 @@ setup_python_pip() {
   # https://mirrors.tuna.tsinghua.edu.cn/help/pypi/
   if command -v pip3 &> /dev/null; then
     log "Setting PyPI to Tsinghua mirror"
+    run "pip3 config set global.index-url \
+      https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
     pip3 config set global.index-url \
       https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple || {
       err "Failed to set PyPI to Tsinghua mirror globally"
@@ -210,6 +226,7 @@ setup_python_pip() {
   # In case user uses UV
   log "Setting UV_DEFAULT_INDEX"
   export UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+  run "cat << 'EOF' >> ~/.bashrc [UV_DEFAULT_INDEX]EOF"
   if ! grep -q "UV_DEFAULT_INDEX" "${HOME}/.bashrc"; then
     cat << 'EOF' >> ~/.bashrc
 
@@ -224,6 +241,7 @@ EOF
 # https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl
 setup_node_nvm_and_npm_registry() {
   if ! command -v curl &> /dev/null; then
+    run "sudo apt -y install curl"
     sudo apt -y install curl || {
       err "Failed to install curl"
       return 1
@@ -234,6 +252,7 @@ setup_node_nvm_and_npm_registry() {
   # https://gitee.com/mirrors/nvm
   if [[ ! -d "${HOME}/.nvm" ]]; then
     log "Installing NVM"
+    run "/bin/bash -c \"\$(curl -fsSL --proto '=https' --tlsv1.3 https://gitee.com/mirrors/nvm/raw/master/install.sh)\""
     /bin/bash -c "$(curl -fsSL --proto '=https' --tlsv1.3 https://gitee.com/mirrors/nvm/raw/master/install.sh)" || {
       err "NVM download or installation script failed"
       return 1
@@ -252,6 +271,7 @@ setup_node_nvm_and_npm_registry() {
   # Write activation script to ~/.bashrc to auto-start nvm
   if ! grep -q "NVM_DIR" "${HOME}/.bashrc"; then
     log "Adding NVM to ~/.bashrc"
+    run "cat << 'EOF' >> ~/.bashrc [nvm_profile]EOF"
     cat << 'EOF' >> ~/.bashrc
 
 export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
@@ -268,12 +288,14 @@ EOF
   fi
 
   export NVM_NODEJS_ORG_MIRROR=https://npmmirror.com/mirrors/node
+  run "nvm install --lts"
   nvm install --lts || {
     err "Failed to install Node.js via nvm"
     return 1
   }
 
   log "Using Node.js LTS"
+  run "nvm use --lts"
   nvm use --lts || {
     err "Failed to use Node LTS via nvm"
     return 1
@@ -283,6 +305,7 @@ EOF
   # Change NPM Registry
   # https://npmmirror.com/
   log "Setting NPM Registry to npmmirror"
+  run "npm config set registry https://registry.npmmirror.com"
   npm config set registry https://registry.npmmirror.com || {
     err "Failed to set NPM registry to npmmirror"
     return 1
@@ -305,6 +328,7 @@ set_cuda() {
     return 1
   fi
 
+  run "sudo mkdir -p ${TARGET_DIR}"
   sudo mkdir -p "${TARGET_DIR}"
 
   # If it is already a link, check if it is correct
@@ -323,6 +347,7 @@ set_cuda() {
   fi
 
   # sudo ln -s /usr/lib/wsl/lib/libcuda.so.1 /usr/local/cuda/lib64/libcuda.so
+  run "sudo ln -sn ${LIB_PATH} ${TARGET_PATH}"
   sudo ln -sn "${LIB_PATH}" "${TARGET_PATH}" || {
     err "Failed to create symlink"
     return 1
