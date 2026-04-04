@@ -226,8 +226,9 @@ setup_python_pip() {
   # In case user uses UV
   log "Setting UV_DEFAULT_INDEX"
   export UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-  run "cat << 'EOF' >> ~/.bashrc [UV_DEFAULT_INDEX]EOF"
+
   if ! grep -q "UV_DEFAULT_INDEX" "${HOME}/.bashrc"; then
+    run "cat << 'EOF' >> ~/.bashrc [UV_DEFAULT_INDEX]EOF"
     cat << 'EOF' >> ~/.bashrc
 
 export UV_DEFAULT_INDEX="https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
