@@ -10,15 +10,15 @@ set -euo pipefail # Exit on error
 # Force a secure, minimal PATH to avoid PATH interception
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
 
-RED=''
-BLUE=''
-NC=''
-
 # Check if the output is a terminal AND supports color
-if [[ -t 1 && -z $NO_COLOR && "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]]; then
-    RED='\033[1;31m'
-    BLUE='\033[1;34m'
-    NC='\033[0m'
+if [[ -t 1 ]] && [[ -z "${NO_COLOR-}" ]] && (( $(tput colors 2>/dev/null || echo 0) >= 8 )); then
+  readonly RED='\033[1;31m'
+  readonly BLUE='\033[1;34m'
+  readonly NC='\033[0m'
+else
+  readonly RED=''
+  readonly BLUE=''
+  readonly NC=''
 fi
 
 err() {
