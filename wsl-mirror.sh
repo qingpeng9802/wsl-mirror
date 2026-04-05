@@ -36,6 +36,8 @@ check_sudo() {
     err "sudo authentication failed. This script requires sudo."
     exit 1
   }
+
+  divider
 }
 
 # 1. Change APT sources
