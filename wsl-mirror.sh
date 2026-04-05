@@ -15,7 +15,7 @@ BLUE=''
 NC=''
 
 # Check if the output is a terminal AND supports color
-if [ -t 1 ] && [ "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]; then
+if [[ -t 1 && -z $NO_COLOR && "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]]; then
     RED='\033[1;31m'
     BLUE='\033[1;34m'
     NC='\033[0m'
