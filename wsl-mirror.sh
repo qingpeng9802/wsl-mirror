@@ -10,23 +10,34 @@ set -euo pipefail # Exit on error
 # Force a secure, minimal PATH to avoid PATH interception
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
 
+RED=''
+BLUE=''
+NC=''
+
+# Check if the output is a terminal AND supports color
+if [ -t 1 ] && [ "$(tput colors 2>/dev/null || echo 0)" -ge 8 ]; then
+    RED='\033[1;31m'
+    BLUE='\033[1;34m'
+    NC='\033[0m'
+fi
+
 err() {
   # Red color for errors
-  printf "\033[1;31m[WSL-Mirror] ERROR:\033[0m %s\n" "$*" >&2
+  printf "${RED}[WSL-Mirror] ERROR:${NC} %s\n" "$*" >&2
 }
 
 log() {
   # Blue color for logs
-  printf "\033[1;34m[WSL-Mirror]\033[0m %s\n" "$*"
+  printf "${BLUE}[WSL-Mirror]${NC} %s\n" "$*"
 }
 
 log_cmd() {
   # Blue color for logging commands
-  printf "\033[1;34m>\033[0m %s\n" "$*"
+  printf "${BLUE}>${NC} %s\n" "$*"
 }
 
 divider() {
-  printf "%*s\033[0m\n" 80 "" | tr " " "-"
+  printf "%*s\n" 80 "" | tr " " "-"
 }
 
 # Check sudo
