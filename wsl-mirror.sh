@@ -5,10 +5,21 @@
 # and configure Python and Node.js environments for WSL
 # according to Microsoft's guide
 
-set -euo pipefail # Exit on error
+# Make the shell script secure
+# Reset IFS
+IFS=$' \t\n'
+# Make sure unset is not inherited
+POSIXLY_CORRECT=1
+# Make sure unalias is not a user function
+\unset -f unset unalias
+# Unset all possible aliases
+# Note that unalias is escaped to prevent an alias being used for unalias
+\unalias -a
+# Force a secure, minimal PATH to avoid PATH interception; no trailing colon
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin${PATH:+:${PATH}}"
+\unset POSIXLY_CORRECT
 
-# Force a secure, minimal PATH to avoid PATH interception
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
+set -euo pipefail # Exit on error
 
 # Check if the output is a terminal AND supports color
 if [[ -t 1 ]] && [[ -z "${NO_COLOR-}" ]] && (( $(tput colors 2>/dev/null || echo 0) >= 8 )); then
