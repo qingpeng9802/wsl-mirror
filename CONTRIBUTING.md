@@ -7,10 +7,16 @@ cd test
 make
 ```
 
-Test on Ubuntu  
+Test on Ubuntu 24.04 
 ```sh
 cd test
-make ubuntu
+make ubuntu24
+```
+
+Test on Ubuntu 26.04 
+```sh
+cd test
+make ubuntu26
 ```
 
 Test on Debian  
