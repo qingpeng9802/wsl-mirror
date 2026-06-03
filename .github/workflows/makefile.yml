@@ -2,6 +2,7 @@ name: CI
 
 on:
   workflow_dispatch:
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -23,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, debian]
+        os: [ubuntu24, ubuntu26, debian]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
