@@ -24,11 +24,11 @@ set -euo pipefail # Exit on error
 # Check if the output is a terminal AND supports color
 if [[ -t 1 ]] && [[ -z "${NO_COLOR-}" ]] && (( $(tput colors 2>/dev/null || echo 0) >= 8 )); then
   readonly RED='\033[1;31m'
-  readonly BLUE='\033[1;34m'
+  readonly CYAN='\033[1;36m'
   readonly NC='\033[0m'
 else
   readonly RED=''
-  readonly BLUE=''
+  readonly CYAN=''
   readonly NC=''
 fi
 
@@ -38,13 +38,13 @@ err() {
 }
 
 log() {
-  # Blue color for logs
-  printf "${BLUE}[WSL-Mirror]${NC} %s\n" "$*"
+  # Cyan color for logs
+  printf "${CYAN}[WSL-Mirror]${NC} %s\n" "$*"
 }
 
 log_cmd() {
-  # Blue color for logging commands
-  printf "${BLUE}>${NC} %s\n" "$*"
+  # Cyan color for logging commands
+  printf "${CYAN}>${NC} %s\n" "$*"
 }
 
 divider() {
