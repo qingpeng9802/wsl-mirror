@@ -3,7 +3,7 @@
 这个 script 主要针对初始状态的 WSL 来完成 apt、pip 和 npm 的一站式镜像源更换，利用国内镜像源来解决网络连接问题.  
 
 apt 和 pip 使用清华源 [ubuntu](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/) | [debian](https://mirrors.tuna.tsinghua.edu.cn/help/debian/) | [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/)，npm 和 node 使用[阿里源](https://npmmirror.com/).  
-兼容 WSL 及非 WSL 下的 Ubuntu 24.04 (Noble) 及更高版本 和 Debian 13 (Trixie) 及更高版本.  
+兼容 WSL 及非 WSL (包括但不限于 Bare Metal, Docker, VM, Container Machine) 下的 Ubuntu 24.04 (Noble) 及更高版本 和 Debian 13 (Trixie) 及更高版本.  
 
 同时，对于 WSL 第一次安装 Python、pip、Node.js 和 npm 的方式，遵循微软的最佳实践指引，即 [Python](https://learn.microsoft.com/en-us/windows/python/web-frameworks) 和 [Node.js](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl).  
 script 未安装 uv, 但已将 `UV_DEFAULT_INDEX` 设为清华源 [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/).  
