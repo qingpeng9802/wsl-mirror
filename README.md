@@ -2,14 +2,16 @@
 
 这个 script 主要针对初始状态的 WSL 来完成 apt、pip 和 npm 的一站式镜像源更换，利用国内镜像源来解决网络连接问题.  
 
-apt 和 pip 使用清华源 [ubuntu](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/) | [debian](https://mirrors.tuna.tsinghua.edu.cn/help/debian/) | [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/)，npm 和 node 使用[阿里源](https://npmmirror.com/).  
-兼容 WSL 及非 WSL (包括但不限于 Bare Metal, Docker, VM, Container Machine) 下的 Ubuntu 24.04 (Noble) 及更高版本 和 Debian 13 (Trixie) 及更高版本.  
+**镜像源**：apt 和 pip 使用清华源 [ubuntu](https://mirrors.tuna.tsinghua.edu.cn/help/ubuntu/) | [debian](https://mirrors.tuna.tsinghua.edu.cn/help/debian/) | [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/)，npm 和 node 使用[阿里源](https://npmmirror.com/).  
 
-同时，对于 WSL 第一次安装 Python、pip、Node.js 和 npm 的方式，遵循微软的最佳实践指引，即 [Python](https://learn.microsoft.com/en-us/windows/python/web-frameworks) 和 [Node.js](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl).  
+**兼容性**：WSL 及非 WSL (包括但不限于 Bare Metal, Docker, VM, Container Machine) 下的 Ubuntu 24.04 (Noble) 及更高版本 和 Debian 13 (Trixie) 及更高版本.  
+
+**安装软件包**：对于 WSL 第一次安装 Python、pip、Node.js 和 npm 的方式，遵循微软的最佳实践指引，即 [Python](https://learn.microsoft.com/en-us/windows/python/web-frameworks) 和 [Node.js](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl).  
 script 未安装 uv, 但已将 `UV_DEFAULT_INDEX` 设为清华源 [pypi](https://mirrors.tuna.tsinghua.edu.cn/help/pypi/).  
-  
-shell 命令都包含详细注释，强烈推荐使用前阅读. 旧版本 [wsl-mirror.sh](https://github.com/qingpeng9802/wsl-mirror/blob/71144c3d8f951dc48a485252ed801fc1f0a696cc/wsl-mirror.sh) 可能更容易理解.  
-请注意，如果 WSL 不是在初始状态，即已被修改和使用过，该 script 可能会造成文件的意外修改，特别注意 `/etc/apt/sources.list.d/ubuntu.sources` (Debian: `/etc/apt/sources.list.d/debian.sources`) 和 `~/.bashrc`.  
+
+> [!NOTE]
+> - shell 命令都包含详细注释，强烈推荐使用前阅读. 旧版本 [wsl-mirror.sh](https://github.com/qingpeng9802/wsl-mirror/blob/71144c3d8f951dc48a485252ed801fc1f0a696cc/wsl-mirror.sh) 可能更容易理解.  
+> - 请注意，如果 WSL 不是在初始状态，即已被修改和使用过，该 script 可能会造成文件的意外修改，特别注意 `/etc/apt/sources.list.d/ubuntu.sources` (Debian: `/etc/apt/sources.list.d/debian.sources`) 和 `~/.bashrc`.  
 
 ## 使用方式
 ```shell
